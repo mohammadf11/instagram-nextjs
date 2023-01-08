@@ -1,75 +1,45 @@
-const posts = [
-  {
-    id: "1",
-    username: "puzzle",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "2",
-    username: "second",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "3",
-    username: "third",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "4",
-    username: "forth ",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "5",
-    username: "fiveth",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "6",
-    username: "one ",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "v",
-    username: "two",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-  {
-    id: "8",
-    username: "three",
-    userImg:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrBz_90H9v0IBP_OZdSgJuiGOjqU-tWFiCAA&usqp=CAU",
-    caption: "this is caption",
-  },
-];
-import Post from './Post';
+import Post from "./Post";
+import { useState, useEffect } from "react";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { db } from "../firebase";
+// const posts = [
+//   {
+//     id: "123",
+//     username: "puzzle",
+//     userImg:
+//       "https://lh3.googleusercontent.com/a-/AFdZucqfsr6g9JLLbyQiknnSylhhmE1I8oL6umab1hFG=s96-c",
+//     img: "https://firebasestorage.googleapis.com/v0/b/instagram-clone-f8417.appspot.com/o/posts%2FUS2aamYpwrKA5Ba0bX7j%2Fimage?alt=media&token=f0f866de-1471-4880-8612-c5077e48007c",
+//     caption: "This is caption for the post",
+//   },
+//   {
+//     id: "124",
+//     username: "puzzleiran",
+//     userImg:
+//       "https://lh3.googleusercontent.com/a-/AFdZucqfsr6g9JLLbyQiknnSylhhmE1I8oL6umab1hFG=s96-c",
+//     img: "https://firebasestorage.googleapis.com/v0/b/instagram-clone-f8417.appspot.com/o/posts%2FIGcnlsvEra7y4zvMsO8T%2Fimage?alt=media&token=4fdf05e7-d185-495b-9c98-f8c972aebb35",
+//     caption: "This is caption for the post - second post",
+//   },
+// ];
+
 function Posts() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "posts"), orderBy("timestamp", "desc")),
+        (snapshot) => setPosts(snapshot.docs)
+      ),
+    []
+  );
+
   return (
     <div>
       {posts.map((post) => (
-        <Post key={post.div} post={post}/>
+        <Post
+          key={post.id}
+          post  ={post.data()}
+        />
       ))}
     </div>
   );

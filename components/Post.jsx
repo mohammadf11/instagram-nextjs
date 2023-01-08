@@ -12,7 +12,7 @@ function Post({ post }) {
       {/* header img profilename */}
       <div className="flex items-center p-5 ">
         <img
-          src={post.userImg}
+          src={post.profileImg}
           alt=""
           className="w-12 h-12 rounded-full object-contain border p-1 mr-3"
         />
@@ -20,7 +20,7 @@ function Post({ post }) {
         <EllipsisHorizontalIcon className="h-8" />
       </div>
       {/* img - post */}
-      <img src={post.img} alt="" className="object-cover w-full" />
+      <img src={post.image} alt="" className="object-cover w-full" />
 
       {/* buttons */}
       <div className="flex justify-between p-4">
